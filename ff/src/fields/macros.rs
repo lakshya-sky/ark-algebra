@@ -13,9 +13,8 @@ macro_rules! impl_prime_field_serializer {
                 }
 
                 // Calculate the number of bytes required to represent a field element
-                // serialized with `flags`. If `F::BIT_SIZE < 8`,
-                // this is at most `$byte_size + 1`
-                let output_byte_size = buffer_byte_size(P::MODULUS_BITS as usize + F::BIT_SIZE);
+                // serialized with `flags`.
+                let output_byte_size = Self::zero().serialized_size_with_flags::<F>();
 
                 // Write out `self` to a temporary buffer.
                 // The size of the buffer is $byte_size + 1 because `F::BIT_SIZE`
