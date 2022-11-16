@@ -321,7 +321,8 @@ macro_rules! impl_Fp {
                     });
                     // This mask retains everything in the last limb
                     // that is below `P::MODULUS_BITS`.
-                    let last_limb_mask = (u64::MAX >> P::REPR_SHAVE_BITS).to_le_bytes();
+                    let last_limb_mask =
+                        (u64::MAX.checked_shr(P::REPR_SHAVE_BITS).unwrap_or(0)).to_le_bytes();
                     let mut last_bytes_mask = [0u8; 9];
                     last_bytes_mask[..8].copy_from_slice(&last_limb_mask);
 
@@ -333,7 +334,7 @@ macro_rules! impl_Fp {
                     let flag_location = output_byte_size - 1;
 
                     // At which byte is the flag located in the last limb?
-                    let flag_location_in_last_limb = flag_location - (8 * ($limbs - 1));
+                    let flag_location_in_last_limb = flag_location.checked_sub(8 * ($limbs - 1)).unwrap_or(0);
 
                     // Take all but the last 9 bytes.
                     let last_bytes = &mut result_bytes[8 * ($limbs - 1)..];
